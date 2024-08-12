@@ -1,11 +1,8 @@
-
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   String? id;
   String? userId;
-  String? profileImage;
   String? name;
   String? surName;
   String? email;
@@ -24,7 +21,6 @@ class UserModel {
     this.id,
     this.userId,
     this.name,
-    this.profileImage,
     this.surName,
     this.email,
     this.profilePictureUrl,
@@ -39,35 +35,28 @@ class UserModel {
     this.attendance,
   });
 
-  factory UserModel.fromDocument(DocumentSnapshot doc) {
-    Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
-    return UserModel(
-      id: doc.id,
-      userId: data['userId'],
-      name: data['name'] ?? '',
-      surName: data['surName']??'',
-      email: data['email'] ?? '',
-      profileImage: data['profileImage']??'',
-
-      profilePictureUrl: data['profilePictureUrl'] ?? '',
-      cvUrl: data['cvUrl'] ?? '',
-      resultCardUrl: data['resultCardUrl'] ?? '',
-      experienceLetterUrl: data['experienceLetterUrl'] ?? '',
-      carrier: data['carrier'],
-      joiningDate: data['joiningDate'],
-      role: data['role'] ?? '',
-      completedProjects: List<String>.from(data['completedProjects'] ?? []),
-      ongoingProjects: List<String>.from(data['ongoingProjects'] ?? []),
-      attendance: data['attendance'] ?? 0,
-    );
+  UserModel.fromMap(Map<String, dynamic> map) {
+    userId = map['userId'];
+    name = map['name'] ?? '';
+    surName = map['surName'] ?? '';
+    email = map['email'] ?? '';
+    profilePictureUrl = map['profilePictureUrl'] ?? '';
+    cvUrl = map['cvUrl'] ?? '';
+    resultCardUrl = map['resultCardUrl'] ?? '';
+    experienceLetterUrl = map['experienceLetterUrl'] ?? '';
+    carrier = map['carrier'];
+    joiningDate = map['joiningDate'];
+    role = map['role'] ?? '';
+    completedProjects = List<String>.from(map['completedProjects'] ?? []);
+    ongoingProjects = List<String>.from(map['ongoingProjects'] ?? []);
+    attendance = map['attendance'] ?? 0;
   }
 
   Map<String, dynamic> toMap() {
     return {
-      'userId':userId,
+      'userId': userId,
       'name': name,
-      'surName':surName,
-      'profileImage':profileImage,
+      'surName': surName,
       'email': email,
       'profilePictureUrl': profilePictureUrl,
       'cvUrl': cvUrl,
@@ -80,5 +69,10 @@ class UserModel {
       'ongoingProjects': ongoingProjects,
       'attendance': attendance,
     };
+  }
+
+  @override
+  String toString() {
+    return 'UserModel(id: $id, userId: $userId, name: $name, surName: $surName, email: $email, profilePictureUrl: $profilePictureUrl, cvUrl: $cvUrl, resultCardUrl: $resultCardUrl, experienceLetterUrl: $experienceLetterUrl, carrier: $carrier, joiningDate: $joiningDate, role: $role, completedProjects: $completedProjects, ongoingProjects: $ongoingProjects, attendance: $attendance)';
   }
 }

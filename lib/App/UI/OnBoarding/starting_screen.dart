@@ -3,8 +3,8 @@ import 'package:fasolution/App/UI/OnBoarding/onBoarding.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-import '../Resources/Color.dart';
-import '../Resources/Components/GradientText.dart';
+import '../../Resources/Color.dart';
+import '../../Resources/Components/GradientText.dart';
 
 
 class StartingScreen extends StatefulWidget {

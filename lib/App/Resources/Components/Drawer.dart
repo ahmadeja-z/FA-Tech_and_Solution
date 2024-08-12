@@ -4,12 +4,13 @@ class SideBox extends StatelessWidget {
   final String profileName;
   final String email;
   final String profilePictureUrl;
+  final VoidCallback onTap;
 
   const SideBox({
     Key? key,
     required this.profileName,
     required this.email,
-    required this.profilePictureUrl,
+    required this.profilePictureUrl, required this.onTap,
   }) : super(key: key);
 
   @override
@@ -31,9 +32,7 @@ class SideBox extends StatelessWidget {
           ListTile(
             leading: Icon(Icons.logout),
             title: Text('Log Out'),
-            onTap: () {
-              // Handle logout action here
-            },
+            onTap:onTap,
           ),
         ],
       ),

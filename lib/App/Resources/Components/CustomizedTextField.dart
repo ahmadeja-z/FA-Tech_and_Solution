@@ -127,6 +127,8 @@ class _CustomizedTextFieldState extends State<customizedTextField> {
               _hasError = false;
               _errorMessage = null;
             });
+          }else{
+
           }
         },
         onSubmitted: (val) {

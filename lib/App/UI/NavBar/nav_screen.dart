@@ -1,3 +1,6 @@
+import 'package:fasolution/App/Model/Model/UserModel.dart';
+import 'package:fasolution/App/UI/Autentication/Login.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -6,24 +9,40 @@ import '../../Resources/Components/AppBar.dart';
 import '../../Resources/Components/Drawer.dart';
 import 'Attendence/AttendencePage.dart';
 import 'Announsments/Announsments.dart';
-import 'Home/Home.dart';
+import 'Home/people_info.dart';
 import 'Profile/Profile.dart';
 
 class NavigationScreen extends StatefulWidget {
-  NavigationScreen({super.key});
+  NavigationScreen({super.key, required this.userModel, required this.user});
+  final UserModel userModel;
+  final User user;
 
   @override
   State<NavigationScreen> createState() => _NavigationScreenState();
 }
 
 class _NavigationScreenState extends State<NavigationScreen> {
-  final List<Widget> _screens = [
-    PeoplePage(),
-    AttendancePage(),
-    AnnouncementsPage(),
-    Profile(),
-  ];
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final List<Widget> _screens = [
+      PeoplePage(),
+      AttendancePage(),
+      AnnouncementsPage(),
+      Profile(
+        userModel: widget.userModel,
+        FirebaseUser: widget.user,
+      ),
+    ];
+  }
 
+  List<Widget> get _screens => [
+        PeoplePage(),
+        AttendancePage(),
+        AnnouncementsPage(),
+        Profile(userModel: widget.userModel, FirebaseUser: widget.user),
+      ];
   final List<String> _titles = [
     'People',
     'Attendance',
@@ -36,12 +55,23 @@ class _NavigationScreenState extends State<NavigationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomizedAppBar(title: _titles[_currentIndex]), // Pass dynamic title
-      backgroundColor: Colors.transparent, // Transparent background for the main content
-      drawer: SideBox( // Add your drawer if needed
-        profileName: 'John Doe',
-        email: 'john.doe@example.com',
-        profilePictureUrl: 'https://via.placeholder.com/150',
+      appBar:
+          CustomizedAppBar(title: _titles[_currentIndex]), // Pass dynamic title
+      backgroundColor:
+          Colors.transparent, // Transparent background for the main content
+      drawer: SideBox(
+        // Add your drawer if needed
+        profileName: widget.userModel.name.toString(),
+        email: widget.userModel.email.toString(),
+        profilePictureUrl: widget.userModel.profilePictureUrl.toString(),
+        onTap: () {
+          FirebaseAuth.instance.signOut();
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => LoginScreen(),
+              ));
+        },
       ),
       body: Stack(
         children: [
@@ -68,7 +98,8 @@ class _NavigationScreenState extends State<NavigationScreen> {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(50),
                   child: BottomNavigationBar(
-                    backgroundColor: Colors.white, // Background of BottomNavigationBar
+                    backgroundColor:
+                        Colors.white, // Background of BottomNavigationBar
                     currentIndex: _currentIndex,
                     onTap: (index) {
                       setState(() {
@@ -85,21 +116,15 @@ class _NavigationScreenState extends State<NavigationScreen> {
                     ),
                     items: const [
                       BottomNavigationBarItem(
-                          icon: Icon(CupertinoIcons.home),
-                          label: 'Home'
-                      ),
+                          icon: Icon(CupertinoIcons.home), label: 'Home'),
                       BottomNavigationBarItem(
                           icon: Icon(Icons.bookmark_add_outlined),
-                          label: 'Attendance'
-                      ),
+                          label: 'Attendance'),
                       BottomNavigationBarItem(
                           icon: Icon(Icons.announcement_outlined),
-                          label: 'Announcement'
-                      ),
+                          label: 'Announcement'),
                       BottomNavigationBarItem(
-                          icon: Icon(CupertinoIcons.person),
-                          label: 'Profile'
-                      ),
+                          icon: Icon(CupertinoIcons.person), label: 'Profile'),
                     ],
                   ),
                 ),

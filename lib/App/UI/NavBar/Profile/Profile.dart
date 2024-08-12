@@ -1,11 +1,22 @@
-
+import 'package:fasolution/App/Model/Model/UserModel.dart';
+import 'package:fasolution/App/UI/NavBar/Profile/FileViewer.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Resources/Color.dart';
 import '../../../Resources/Components/AppBar.dart';
+import '../../../Resources/Components/ProfileRow.dart';
 
-class Profile extends StatelessWidget {
+class Profile extends StatefulWidget {
+  Profile({super.key, required this.userModel, required this.FirebaseUser});
+  final User FirebaseUser;
+  final UserModel userModel;
+  @override
+  State<Profile> createState() => _ProfileState();
+}
+
+class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -17,22 +28,24 @@ class Profile extends StatelessWidget {
             // Profile Picture
             CircleAvatar(
               radius: 60,
-              backgroundImage: NetworkImage('https://via.placeholder.com/150'),
+              backgroundImage:
+                  NetworkImage(widget.userModel.profilePictureUrl.toString()),
             ),
             SizedBox(height: 20),
 
             // Name and Email
             Text(
-              'John Doe',
+              '${widget.userModel.name.toString()} ${widget.userModel.surName.toString()}',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
                 color: FColor.primaryColor1,
               ),
             ),
+
             SizedBox(height: 10),
             Text(
-              'john.doe@example.com',
+              widget.userModel.email.toString(),
               style: TextStyle(
                 fontSize: 18,
                 color: FColor.GreyBrown,
@@ -41,15 +54,20 @@ class Profile extends StatelessWidget {
             SizedBox(height: 30),
 
             // User Details
-            _buildInfoRow(Icons.calendar_today, 'Joining Date', '10 May 2022'),
-            _buildInfoRow(Icons.person, 'Role', 'Employee'),
+            _buildInfoRow(Icons.calendar_today, 'Joining Date',
+                widget.userModel.joiningDate.toString()),
+            _buildInfoRow(
+                Icons.person, 'Role', widget.userModel.role.toString()),
             _buildInfoRow(Icons.check_circle, 'Attendance', '95%'),
             SizedBox(height: 30),
 
             // Completed Projects Table
             Text(
               'Completed Projects',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: FColor.primaryColor1),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: FColor.primaryColor1),
             ),
             SizedBox(height: 10),
             _buildProjectsTable(
@@ -63,7 +81,10 @@ class Profile extends StatelessWidget {
             // Ongoing Projects Table
             Text(
               'Ongoing Projects',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: FColor.primaryColor1),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: FColor.primaryColor1),
             ),
             SizedBox(height: 10),
             _buildProjectsTable(
@@ -77,43 +98,72 @@ class Profile extends StatelessWidget {
             SizedBox(height: 30),
             Text(
               'Documents',
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: FColor.primaryColor1),
+              style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  color: FColor.primaryColor1),
             ),
             SizedBox(height: 10),
-            _buildDocumentRow(Icons.description, 'CV'),
-            _buildDocumentRow(Icons.school, 'Result Card'),
-            _buildDocumentRow(Icons.verified, 'Experience Letter'),
+            DocumentRow(
+              icon: Icons.description,
+              label: 'CV',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FileViewer(
+                        title: 'CV',
+                          fileUrl: widget.userModel.cvUrl.toString()),
+                    ));
+              },
+            ),
+            DocumentRow(
+              icon: Icons.school,
+              label: 'Result',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FileViewer(
+                        title: 'Result Card',
+                          fileUrl: widget.userModel.resultCardUrl.toString()),
+                    ));
+              },
+            ),
+            DocumentRow(
+              icon: Icons.verified,
+              label: 'Experience Letter',
+              onTap: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => FileViewer(
+                        title: 'Experience Letter',
+                          fileUrl:
+                              widget.userModel.experienceLetterUrl.toString()),
+                    ));
+              },
+            ),
+
             SizedBox(height: 30),
 
             // Action Buttons
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: FColor.primaryColor1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  ),
-                  child: Text('Edit Profile'),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                backgroundColor: FColor.primaryColor1,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: FColor.primaryColor1,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                    padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-                  ),
-                  child: Text('View Documents'),
-                ),
-              ],
+                padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
+              ),
+              child: Text('Edit Profile',style: TextStyle(
+                color: Colors.white
+              ),),
             ),
-            SizedBox(height: 250,)
+            SizedBox(
+              height: 250,
+            )
           ],
         ),
       ),
@@ -144,8 +194,8 @@ class Profile extends StatelessWidget {
     );
   }
 
-  Widget _buildProjectsTable(
-      BuildContext context, List<String> projects, IconData icon, Color iconColor) {
+  Widget _buildProjectsTable(BuildContext context, List<String> projects,
+      IconData icon, Color iconColor) {
     return Table(
       columnWidths: {
         0: FixedColumnWidth(50),
@@ -171,16 +221,4 @@ class Profile extends StatelessWidget {
       }).toList(),
     );
   }
-
-  Widget _buildDocumentRow(IconData icon, String label) {
-    return ListTile(
-      leading: Icon(icon, color: FColor.primaryColor1),
-      title: Text(label),
-      trailing: Icon(Icons.arrow_forward_ios),
-      onTap: () {
-        // Handle document view or download
-      },
-    );
-  }
 }
-

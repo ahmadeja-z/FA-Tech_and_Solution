@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fasolution/App/Resources/Components/DatePickerField.dart';
-import 'package:fasolution/App/UI/NavBar/NavScreen.dart';
+import 'package:fasolution/App/UI/NavBar/nav_screen.dart';
 import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -15,6 +15,7 @@ import '../../../Model/Model/UserModel.dart';
 import '../../../Resources/Color.dart';
 import '../../../Resources/Components/CustomizedTextField.dart';
 import '../../../Resources/Components/GradientButton.dart';
+import '../../../Utils/ShowMessage/Ui Helper.dart';
 
 class CompleteProfile extends StatefulWidget {
   CompleteProfile(
@@ -228,6 +229,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                     print(developmentController.toString());
                     print(_cvFile.toString());
                     print(dateOfJoining.toString());
+                    checkValue();
                   },
                   child: GradientButton(ButtonTitle: 'Next >')),
               SizedBox(
@@ -315,14 +317,18 @@ class _CompleteProfileState extends State<CompleteProfile> {
           _cvFile == null ||
           _experienceLetterFile == null ||
           _resultCardFile == null) {
-        showMessage.errorToastMessage('Please Fill all the requirements');
-      } else {}
+        UiHelper.showErrorDialog(
+            'Requirements', 'Fill all the requirements', context);
+      } else {
+        uploadDate();
+      }
     } catch (e) {
       print(e.toString());
     }
   }
 
   void uploadDate() async {
+    UiHelper.showLoadingAlert('Almost there...', context);
     try {
       final String uid = widget.userModel.userId.toString();
       final uploadImage = await FirebaseStorage.instance
@@ -353,10 +359,10 @@ class _CompleteProfileState extends State<CompleteProfile> {
           .putFile(_resultCardFile!);
       TaskSnapshot resultSnapshot = await uploadResult;
       String resultUrl = await resultSnapshot.ref.getDownloadURL();
-      String role = roleController.toString();
-      String development = developmentController.toString();
-      String dateofJoining = dateOfJoining.toString();
-      widget.userModel.profileImage = imageUrl.toString();
+      String role = roleController.text;
+      String development = developmentController.text;
+      String dateofJoining = dateOfJoining.text;
+      widget.userModel.profilePictureUrl = imageUrl.toString();
       widget.userModel.cvUrl = cvUrl.toString();
       widget.userModel.experienceLetterUrl = experienceLetterUrl.toString();
       widget.userModel.resultCardUrl = resultUrl.toString();
@@ -374,12 +380,16 @@ class _CompleteProfileState extends State<CompleteProfile> {
               Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => NavigationScreen(),
+                    builder: (context) => NavigationScreen(
+                      userModel: widget.userModel,
+                      user: widget.FirebaseUser,
+                    ),
                   ))
             },
           );
     } catch (e) {
       print(e.toString());
+      UiHelper.showErrorDialog('Exception', e.toString(), context);
     }
   }
 }

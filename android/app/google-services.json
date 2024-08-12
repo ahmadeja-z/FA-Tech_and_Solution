@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "710984482731",
+    "project_id": "fatech-c4a64",
+    "storage_bucket": "fatech-c4a64.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:710984482731:android:8573f0c122938c0d849cee",
+        "android_client_info": {
+          "package_name": "com.example.fasolution"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD8ySEHZKuunwrE2tnI8n0AYRY7R7LbIdM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

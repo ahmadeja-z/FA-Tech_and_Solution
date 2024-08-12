@@ -2,8 +2,10 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fasolution/App/Model/Model/UserModel.dart';
+import 'package:fasolution/App/UI/Autentication/Login.dart';
 import 'package:fasolution/App/UI/Autentication/SignUp/CompleteProfile.dart';
 import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
+import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
@@ -281,7 +283,15 @@ class _SignUp_ViewState extends State<SignUp_View> {
                   height: media.height * .1,
                 ),
                 GestureDetector(
-                    onTap: () {},
+                    onTap: () {
+                      checkController(
+                        _nameController.toString(),
+                        _surNameController.toString(),
+                        _emailController.toString(),
+                        _passwordController.toString(),
+                        _cPasswordController.toString(),
+                      );
+                    },
                     child: GradientButton(ButtonTitle: 'Register')),
                 SizedBox(
                   height: media.height * .03,
@@ -298,13 +308,11 @@ class _SignUp_ViewState extends State<SignUp_View> {
                     ),
                     InkWell(
                       onTap: () {
-                        checkController(
-                          _nameController.toString(),
-                          _surNameController.toString(),
-                          _emailController.toString(),
-                          _passwordController.toString(),
-                          _cPasswordController.toString(),
-                        );
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => LoginScreen(),
+                            ));
                       },
                       child: GradientText(
                           text: ' Login',
@@ -338,9 +346,11 @@ class _SignUp_ViewState extends State<SignUp_View> {
         email.isEmpty ||
         password.isEmpty ||
         cPassword.isEmpty) {
-      showMessage.errorToastMessage('FullFill all requirements');
+      UiHelper.showErrorDialog(
+          'Requirements', 'Fill all the requirements', context);
     } else if (password != cPassword) {
-      showMessage.errorToastMessage('Passwords are not matched');
+      UiHelper.showErrorDialog(
+          'Password Error', 'Passwords are not matched', context);
     } else {
       signUp(name, surName, email, password);
     }
@@ -349,13 +359,14 @@ class _SignUp_ViewState extends State<SignUp_View> {
   void signUp(
       String name, String surName, String email, String password) async {
     UserCredential? credential;
+    UiHelper.showLoadingAlert('Sign...', context);
 
     try {
       credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (ex) {
       print(ex.toString());
-      showMessage.errorToastMessage(ex.toString());
+      UiHelper.showErrorDialog('Exception', ex.toString(), context);
     }
     if (credential != null) {
       String uid = credential.user!.uid.toString();
@@ -393,6 +404,7 @@ class _SignUp_ViewState extends State<SignUp_View> {
       ).onError(
         (error, stackTrace) {
           showMessage.errorToastMessage(error.toString());
+          UiHelper.showErrorDialog('Exception', error.toString(), context);
         },
       );
     }
