@@ -75,8 +75,9 @@ class PersonCard extends StatelessWidget {
                       Text(
                         email,
                         style: TextStyle(
-                          fontSize: 16,
+                          fontSize: 12,
                           color: FColor.GreyBrown,
+                          fontFamily: 'Poppins'
                         ),
                       ),
                     ],

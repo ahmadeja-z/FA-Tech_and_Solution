@@ -224,6 +224,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                     style: GoogleFonts.oswald(fontWeight: FontWeight.w600),
                   )),
               DatePickerField(controller: dateOfJoining),
+              SizedBox(height: media.height*0.02,),
               GestureDetector(
                   onTap: () {
                     print(developmentController.toString());
@@ -233,7 +234,7 @@ class _CompleteProfileState extends State<CompleteProfile> {
                   },
                   child: GradientButton(ButtonTitle: 'Next >')),
               SizedBox(
-                height: media.height * 0.02,
+                height: media.height * 0.04,
               ),
             ],
           ),

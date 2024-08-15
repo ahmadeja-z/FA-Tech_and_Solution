@@ -1,11 +1,11 @@
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/UI/NavBar/Profile/FileViewer.dart';
+import 'package:fasolution/App/UI/NavBar/Profile/edit_profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Resources/Color.dart';
-import '../../../Resources/Components/AppBar.dart';
 import '../../../Resources/Components/ProfileRow.dart';
 
 class Profile extends StatefulWidget {
@@ -15,7 +15,6 @@ class Profile extends StatefulWidget {
   @override
   State<Profile> createState() => _ProfileState();
 }
-
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
@@ -57,8 +56,9 @@ class _ProfileState extends State<Profile> {
             _buildInfoRow(Icons.calendar_today, 'Joining Date',
                 widget.userModel.joiningDate.toString()),
             _buildInfoRow(
-                Icons.person, 'Role', widget.userModel.role.toString()),
-            _buildInfoRow(Icons.check_circle, 'Attendance', '95%'),
+                CupertinoIcons.person, 'Role', widget.userModel.role.toString()),
+            _buildInfoRow(Icons.work_outline, 'Career', widget.userModel.carrier.toString()),
+            _buildInfoRow(CupertinoIcons.check_mark_circled, 'Attendance', widget.userModel.attendance.toString()),
             SizedBox(height: 30),
 
             // Completed Projects Table
@@ -144,12 +144,11 @@ class _ProfileState extends State<Profile> {
                     ));
               },
             ),
-
             SizedBox(height: 30),
-
-            // Action Buttons
             ElevatedButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile(userModel: widget.userModel, firebaseUser: widget.FirebaseUser),));
+              },
               style: ElevatedButton.styleFrom(
                 backgroundColor: FColor.primaryColor1,
                 shape: RoundedRectangleBorder(

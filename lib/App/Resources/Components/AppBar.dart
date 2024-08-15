@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fasolution/App/Resources/Color.dart';
 
-import '../../UI/Notification.dart';
+import '../../UI/NavBar/Notification.dart';
 
 class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;

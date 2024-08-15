@@ -24,7 +24,10 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomizableAppBar(title: 'Pending',
-     leadingIcon: Icon(CupertinoIcons.back,), ),
+     leadingIcon: Icon(CupertinoIcons.back,color: Colors.white,),
+      onLeadingPressed: (){
+        Navigator.pop(context);
+      },),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -59,13 +62,13 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
             SizedBox(height: 30),
 
             _buildInfoRow(CupertinoIcons.person, 'Sur name', widget.surName),
-            _buildInfoRow(Icons.work, 'Carrier', widget.carrier),
+            _buildInfoRow(Icons.work_outline, 'Career', widget.carrier),
 
             _buildInfoRow(Icons.calendar_today, 'Joining Date',
                widget.joiningDate,),
             _buildInfoRow(
                 Icons.person, 'Role', widget.role),
-            _buildInfoRow(Icons.check_circle, 'Attendance', widget.attendance),
+            _buildInfoRow(Icons.check_circle_outline, 'Attendance', widget.attendance),
             SizedBox(height: 30),
 
 

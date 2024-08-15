@@ -15,7 +15,7 @@ class UserModel {
   String? role;
   List<String>? completedProjects;
   List<String>? ongoingProjects;
-  int? attendance;
+  String ? attendance;
 
   UserModel({
     this.id,
@@ -49,7 +49,7 @@ class UserModel {
     role = map['role'] ?? '';
     completedProjects = List<String>.from(map['completedProjects'] ?? []);
     ongoingProjects = List<String>.from(map['ongoingProjects'] ?? []);
-    attendance = map['attendance'] ?? 0;
+    attendance = map['attendance'] ?? '0';
   }
 
   Map<String, dynamic> toMap() {

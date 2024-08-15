@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fasolution/App/Resources/Color.dart';
 
-import '../Resources/Components/AppBar2.dart';
+import '../../Resources/Components/AppBar2.dart';
 
 class NotificationsPage extends StatelessWidget {
   // Sample notifications data

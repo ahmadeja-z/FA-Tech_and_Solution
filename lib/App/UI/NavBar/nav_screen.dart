@@ -28,7 +28,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
     super.initState();
     final List<Widget> _screens = [
       PeoplePage(),
-      AttendancePage(),
+      AttendancePage(userModel: widget.userModel,),
       AnnouncementsPage(),
       Profile(
         userModel: widget.userModel,
@@ -39,7 +39,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
 
   List<Widget> get _screens => [
         PeoplePage(),
-        AttendancePage(),
+        AttendancePage(userModel: widget.userModel,),
         AnnouncementsPage(),
         Profile(userModel: widget.userModel, FirebaseUser: widget.user),
       ];
