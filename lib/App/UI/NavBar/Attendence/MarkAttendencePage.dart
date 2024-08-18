@@ -4,9 +4,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:fasolution/App/Resources/Color.dart';
 import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
+import '../../../Model/Model/attendence_model.dart';
 
 class MarkAttendancePage extends StatefulWidget {
-  final UserModel userModel; // Pass the user's email to mark attendance
+  final UserModel userModel;
 
   MarkAttendancePage({required this.userModel});
 
@@ -20,20 +21,71 @@ class _MarkAttendancePageState extends State<MarkAttendancePage> {
   bool _emailValid = true;
   bool _alreadyCheckedInToday = false;
   bool _isAbsent = false;
-  double _attendancePercentage = 0.0;
-  final DateTime now = DateTime.now();
+  AttendanceModel? _attendanceModel;
 
   @override
   void initState() {
     super.initState();
-    _calculateAttendancePercentage();
-    _checkIfAlreadyCheckedInToday();
+    _fetchAttendanceData();
+  }
+
+  Future<void> _fetchAttendanceData() async {
+    try {
+      final attendanceDoc = await FirebaseFirestore.instance
+          .collection('attendance')
+          .doc(widget.userModel.email)
+          .get();
+
+      if (attendanceDoc.exists) {
+        setState(() {
+          _attendanceModel = AttendanceModel.fromMap(attendanceDoc.data()!);
+        });
+      } else {
+        _attendanceModel = AttendanceModel(
+          widget.userModel.userId,
+          "0",
+          "0",
+          "0",
+          "0",
+          "10", // Assuming 10 leaves initially
+        );
+        await FirebaseFirestore.instance
+            .collection('attendance')
+            .doc(widget.userModel.email)
+            .set(_attendanceModel!.toMap());
+      }
+      _checkIfAlreadyCheckedInToday();
+    } catch (e) {
+      print('Error fetching attendance data: $e');
+      CustomSnackbar.show(context: context, title: 'Error fetching attendance data.');
+    }
   }
 
   Future<void> _checkIfAlreadyCheckedInToday() async {
     final today = DateTime.now().toLocal().toIso8601String().split('T').first;
+    final now = DateTime.now();
 
     try {
+      // Check if it's a weekend
+      if (now.weekday == DateTime.friday) {
+        setState(() {
+          _isAbsent = true;
+          _alreadyCheckedInToday = false;
+        });
+        CustomSnackbar.show(context: context, title: 'Attendance is not allowed on Sundays.');
+        return;
+      }
+
+      // Check if current time is within the allowed attendance hours
+      if (now.hour < 1 || now.hour > 23) {
+        setState(() {
+          _isAbsent = true;
+          _alreadyCheckedInToday = false;
+        });
+        CustomSnackbar.show(context: context, title: 'Attendance can only be marked between 8 AM and 9 PM.');
+        return;
+      }
+
       final doc = await FirebaseFirestore.instance
           .collection('attendance')
           .doc(widget.userModel.email)
@@ -41,25 +93,47 @@ class _MarkAttendancePageState extends State<MarkAttendancePage> {
           .doc(today)
           .get();
 
-      if (doc.exists) {
-        setState(() {
+      setState(() {
+        if (doc.exists) {
           _isCheckedIn = true;
           _alreadyCheckedInToday = true;
-        });
-      } else {
-        setState(() {
-          _isAbsent = true;
-        });
-      }
+          _isAbsent = false;
+        } else {
+          _isCheckedIn = false;
+          _alreadyCheckedInToday = false;
+          _isAbsent = false;
+        }
+      });
     } catch (e) {
       print('Error checking attendance: $e');
-      // Handle errors appropriately
+      CustomSnackbar.show(context: context, title: 'Error checking attendance.');
     }
   }
 
   Future<void> _markAttendance() async {
     final enteredEmail = _emailController.text.trim();
     final today = DateTime.now().toLocal().toIso8601String().split('T').first;
+    final now = DateTime.now();
+
+    // Check if it's a weekend
+    if (now.weekday == DateTime.sunday) {
+      setState(() {
+        _isAbsent = true;
+        _emailValid = true;
+      });
+      CustomSnackbar.show(context: context, title: 'Attendance is not allowed on Sundays.');
+      return;
+    }
+
+    // Check if current time is within the allowed attendance hours
+    if (now.hour < 8 || now.hour > 21) {
+      setState(() {
+        _isAbsent = true;
+        _emailValid = true;
+      });
+      CustomSnackbar.show(context: context, title: 'Attendance can only be marked between 8 AM and 9 PM.');
+      return;
+    }
 
     if (enteredEmail != widget.userModel.email) {
       setState(() {
@@ -85,10 +159,17 @@ class _MarkAttendancePageState extends State<MarkAttendancePage> {
       });
 
       setState(() {
+        _attendanceModel!.totalClasses = (int.parse(_attendanceModel!.totalClasses!) + 1).toString();
+        _attendanceModel!.present = (int.parse(_attendanceModel!.present!) + 1).toString();
         _isCheckedIn = true;
         _alreadyCheckedInToday = true;
         _isAbsent = false;
       });
+
+      await FirebaseFirestore.instance
+          .collection('attendance')
+          .doc(widget.userModel.email)
+          .update(_attendanceModel!.toMap());
 
       CustomSnackbar.show(context: context, title: 'Attendance marked successfully.');
     } catch (e) {
@@ -197,36 +278,5 @@ class _MarkAttendancePageState extends State<MarkAttendancePage> {
         ),
       ),
     );
-  }
-  Future<void> _calculateAttendancePercentage() async {
-    final startOfMonth = DateTime(now.year, now.month, 1);
-    final endOfMonth = DateTime(now.year, now.month + 1, 0);
-    final totalDays = endOfMonth.day;
-
-    try {
-      final attendanceCollection = FirebaseFirestore.instance
-          .collection('attendance')
-          .doc(widget.userModel.email)
-          .collection('dates');
-
-      final querySnapshot = await attendanceCollection
-          .where('date', isGreaterThanOrEqualTo: startOfMonth.toIso8601String())
-          .where('date', isLessThanOrEqualTo: endOfMonth.toIso8601String())
-          .get();
-
-      final totalPresentDays = querySnapshot.docs
-          .where((doc) => doc['status'] == 'Present')
-          .length;
-
-      setState(() {
-        _attendancePercentage = (totalPresentDays / totalDays) * 100;
-      });
-
-      widget.userModel.attendance='${_attendancePercentage}%';
-      await FirebaseFirestore.instance.collection('users').doc(widget.userModel.userId).set(widget.userModel.toMap());
-    } catch (e) {
-      print('Error calculating attendance percentage: $e');
-      // Handle errors appropriately
-    }
   }
 }

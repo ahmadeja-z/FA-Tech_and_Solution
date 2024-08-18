@@ -1,127 +1,148 @@
-import 'package:fasolution/App/Resources/Components/GradientText.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:flutter/material.dart';
-import 'dart:ui';
-
+import '../../../Model/Model/announsmentsModel.dart';
 import '../../../Resources/Color.dart';
-import '../../../Resources/Components/AppBar.dart';
+import 'package:intl/intl.dart';
 
-// Announcements Page
 class AnnouncementsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-          GradientText(text: 'Announcement',
-              style: TextStyle(
-                fontSize: 28,
-                fontWeight: FontWeight.bold,
-                color: FColor.primaryColor1,
-              ),gradient:LinearGradient(colors: FColor.SecondaryGradient) ),
-            SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: <Widget>[
-                  _buildAnnouncementCard(
-                    context,
-                    'Important Meeting on Friday',
-                    'A reminder that the company-wide meeting is scheduled for Friday at 10 AM. Please be on time.',
-                    '20 August 2024',
-                    Icons.event,
-                    Colors.orange,
-                  ),
-                  _buildAnnouncementCard(
-                    context,
-                    'New Policy Update',
-                    'We have updated our company policy regarding remote work. Please review the changes on our intranet.',
-                    '18 August 2024',
-                    Icons.policy,
-                    Colors.blue,
-                  ),
-                  _buildAnnouncementCard(
-                    context,
-                    'Office Renovation',
-                    'The office will be undergoing renovations from next week. Expect some changes in the layout and amenities.',
-                    '15 August 2024',
-                    Icons.build,
-                    Colors.green,
-                  ),
-                  // Add more announcements here
-                ],
-              ),
-            ),
-          ],
-        ),
+      appBar: AppBar(
+        backgroundColor: Colors.transparent,
+        automaticallyImplyLeading: false,
+      ),
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('announcements')
+            .orderBy('dateCreated', descending: true)
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(child: Text('Error: ${snapshot.error}'));
+          }
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return const Center(child: Text('No announcements available.'));
+          }
+
+          final announcements = snapshot.data!.docs.map((doc) {
+            return Announcement.fromMap(doc.data() as Map<String, dynamic>);
+          }).toList();
+
+          final groupedAnnouncements = _groupAnnouncementsByMonthAndDay(announcements);
+
+          return ListView.builder(
+            itemCount: groupedAnnouncements.length,
+            itemBuilder: (context, index) {
+              final month = groupedAnnouncements.keys.elementAt(index);
+              final days = groupedAnnouncements[month]!;
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Text(
+                          month,
+                          style: const TextStyle(
+                            fontSize: 20,
+                            fontFamily: 'Poppins'
+                          ),
+                        ),
+                      ),
+                    ),
+                    ...days.entries.map((dayEntry) {
+                      final day = dayEntry.key;
+                      final dayAnnouncements = dayEntry.value;
+
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4.0, horizontal: 8.0),
+                            child: Text(
+                              day,
+                              style: TextStyle(
+                                  fontSize: 18, fontWeight: FontWeight.bold, color: FColor.primaryColor1),
+                            ),
+                          ),
+                          ...dayAnnouncements.map((announcement) {
+                            return Card(
+                              elevation: 6.0,
+                              margin: const EdgeInsets.all(8.0),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(16.0)),
+                              child: ListTile(
+                                leading: Icon(Icons.announcement, color: FColor.primaryColor1),
+                                title: Text(
+                                  announcement.title.toString(),
+                                  style: const TextStyle(
+                                      fontWeight: FontWeight.bold, fontSize: 16),
+                                ),
+                                subtitle: Text(
+                                  announcement.description.toString(),
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                trailing: Text(
+                                  DateFormat('yyyy-MM-dd')
+                                      .format(announcement.dateCreated!),
+                                  style: const TextStyle(color: Colors.grey),
+                                ),
+                                onTap: () {
+                                  UiHelper.showErrorDialog(
+                                    announcement.title.toString(),
+                                    announcement.description.toString(),
+                                    context,
+                                  );
+                                },
+                              ),
+                            );
+                          }).toList(),
+                        ],
+                      );
+                    }).toList(),
+                  ],
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }
 
-  Widget _buildAnnouncementCard(
-      BuildContext context,
-      String title,
-      String description,
-      String date,
-      IconData icon,
-      Color iconColor,
-      ) {
-    return Card(
-      elevation: 8,
-      margin: EdgeInsets.symmetric(vertical: 8.0),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(15),
-      ),
-      child: InkWell(
-        onTap: () {
-          // Handle card tap
-        },
-        child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
-              CircleAvatar(
-                backgroundColor: iconColor.withOpacity(0.1),
-                child: Icon(icon, color: iconColor, size: 30),
-              ),
-              SizedBox(width: 16),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: <Widget>[
-                GradientText(text: title, gradient: LinearGradient(colors: FColor.PrimaryGradient),style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: FColor.primaryColor1,
-                ),),
-                    SizedBox(height: 10),
-                    Text(
-                      description,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: FColor.GreyBrown,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Align(
-                      alignment: Alignment.bottomRight,
-                      child: Text(
-                        date,
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: FColor.black,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
+  Map<String, Map<String, List<Announcement>>> _groupAnnouncementsByMonthAndDay(
+      List<Announcement> announcements) {
+    final Map<String, Map<String, List<Announcement>>> groupedAnnouncements = {};
+
+    for (var announcement in announcements) {
+      final dateCreated = announcement.dateCreated!;
+      final month = DateFormat.yMMMM().format(dateCreated); // e.g., "August 2024"
+      final day = DateFormat.EEEE().format(dateCreated); // e.g., "Tuesday"
+
+      if (!groupedAnnouncements.containsKey(month)) {
+        groupedAnnouncements[month] = {};
+      }
+
+      if (!groupedAnnouncements[month]!.containsKey(day)) {
+        groupedAnnouncements[month]![day] = [];
+      }
+
+      groupedAnnouncements[month]![day]!.add(announcement);
+    }
+
+    return groupedAnnouncements;
   }
 }

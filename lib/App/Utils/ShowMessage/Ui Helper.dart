@@ -1,3 +1,4 @@
+import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
 import 'package:flutter/material.dart';
 
 class UiHelper {
@@ -25,7 +26,8 @@ class UiHelper {
     );
   }
 
-  static void showErrorDialog(String title, String content, BuildContext context) {
+  static void showErrorDialog(
+      String title, String content, BuildContext context) {
     showDialog(
       barrierDismissible: false,
       context: context,
@@ -53,5 +55,38 @@ class UiHelper {
         );
       },
     );
+  }
+
+  static void showOptionDialog(String Title, String Description,
+      VoidCallback onOk, BuildContext context) {
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            actions: [
+              TextButton(
+                  onPressed: onOk,
+                  child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.red,
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                      child: Text('Delete'))),
+              TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('cancel'))
+            ],
+            title: Text(
+              Title,
+              style: TextStyle(fontFamily: 'Poppins'),
+            ),
+            content: Text(
+              Description,
+              style: TextStyle(fontFamily: 'Poppins'),
+            ),
+          );
+        });
   }
 }
