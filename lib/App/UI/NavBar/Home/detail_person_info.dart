@@ -1,12 +1,24 @@
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
+import 'package:fasolution/App/Resources/Components/deleteButton.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../../Resources/Color.dart';
-
+import '../../../Resources/Components/DetailPerson.dart';
 
 class DetailProfileInfo extends StatefulWidget {
-  DetailProfileInfo({super.key, required this.name, required this.surName, required this.profileImage, required this.carrier, required this.joiningDate, required this.role, required this.attendance, required this.email,});
+  DetailProfileInfo({
+    super.key,
+    required this.name,
+    required this.surName,
+    required this.profileImage,
+    required this.carrier,
+    required this.joiningDate,
+    required this.role,
+    required this.attendance,
+    required this.email,
+    this.OnDelete,
+  });
   final String name;
   final String surName;
   final String email;
@@ -15,6 +27,8 @@ class DetailProfileInfo extends StatefulWidget {
   final String joiningDate;
   final String role;
   final String attendance;
+  final VoidCallback? OnDelete;
+
   @override
   State<DetailProfileInfo> createState() => _DetailProfileInfoState();
 }
@@ -23,11 +37,16 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomizableAppBar(title: 'Pending',
-     leadingIcon: Icon(CupertinoIcons.back,color: Colors.white,),
-      onLeadingPressed: (){
-        Navigator.pop(context);
-      },),
+      appBar: CustomizableAppBar(
+        title: 'Pending',
+        leadingIcon: Icon(
+          CupertinoIcons.back,
+          color: Colors.white,
+        ),
+        onLeadingPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -36,8 +55,7 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
             // Profile Picture
             CircleAvatar(
               radius: 60,
-              backgroundImage:
-              NetworkImage(widget.profileImage),
+              backgroundImage: NetworkImage(widget.profileImage),
             ),
             SizedBox(height: 20),
 
@@ -61,45 +79,22 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
             ),
             SizedBox(height: 30),
 
-            _buildInfoRow(CupertinoIcons.person, 'Sur name', widget.surName),
-            _buildInfoRow(Icons.work_outline, 'Career', widget.carrier),
+            buildInfoRow(CupertinoIcons.person, 'Sur name', widget.surName),
+            buildInfoRow(Icons.work_outline, 'Career', widget.carrier),
 
-            _buildInfoRow(Icons.calendar_today, 'Joining Date',
-               widget.joiningDate,),
-            _buildInfoRow(
-                Icons.person, 'Role', widget.role),
-            _buildInfoRow(Icons.check_circle_outline, 'Attendance', widget.attendance),
+            buildInfoRow(
+              Icons.calendar_today,
+              'Joining Date',
+              widget.joiningDate,
+            ),
+            buildInfoRow(Icons.person, 'Role', widget.role),
+            buildInfoRow(
+                Icons.check_circle_outline, 'Attendance', widget.attendance),
             SizedBox(height: 30),
-
-
-
-
+            if (widget.OnDelete != null)
+              DeleteButton(onPressed: widget.OnDelete!)
           ],
         ),
-      ),
-    );
-  }
-
-  Widget _buildInfoRow(IconData icon, String label, String value) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: Row(
-        children: [
-          Icon(icon, color: FColor.primaryColor1),
-          SizedBox(width: 10),
-          Text(
-            label,
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          Spacer(),
-          Expanded(
-            child: Text(
-              value,
-              textAlign: TextAlign.end,
-              style: TextStyle(fontSize: 16, color: FColor.GreyBrown),
-            ),
-          ),
-        ],
       ),
     );
   }

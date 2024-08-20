@@ -1,8 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../../../../main.dart';
 import '../../../Model/Model/announsmentsModel.dart';
 import '../../../Resources/Color.dart';
+import '../../../Resources/Components/AppBar2.dart';
 
 class CreateAnnouncementPage extends StatefulWidget {
   const CreateAnnouncementPage({Key? key}) : super(key: key);
@@ -19,10 +21,9 @@ class _CreateAnnouncementPageState extends State<CreateAnnouncementPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Announcement'),
-        backgroundColor: FColor.primaryColor1,
-      ),
+      appBar: CustomizableAppBar(title: 'Make Announcement',leadingIcon: Icon(CupertinoIcons.back),onLeadingPressed: (){
+        Navigator.pop(context);
+      },),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Form(

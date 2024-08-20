@@ -105,6 +105,7 @@ class _PeoplePageState extends State<PeoplePage> {
                         });
                   }),
             ),
+
           ],
         ),
       ),

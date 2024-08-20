@@ -1,78 +1,79 @@
-import 'package:fasolution/App/UI/NavBar/Announsments/Announsments.dart';
+import 'package:fasolution/App/Resources/Components/AppBar2.dart';
 import 'package:fasolution/App/UI/admin_panel/Announcements/announcementsPage.dart';
+import 'package:fasolution/App/UI/admin_panel/Emplyees/employees_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Student/student_TabBar_screen.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../../Resources/Color.dart';
+import '../../Resources/Components/AdminPanelGrid.dart';
+import 'Internship/InternTabBar.dart';
 
 class AdminPanelScreen extends StatelessWidget {
+  const AdminPanelScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Admin Panel'),
-        backgroundColor: FColor.primaryColor1, // Use your primary color here
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: GridView.count(
-          crossAxisCount: 2, // 2 items per row
-          crossAxisSpacing: 16.0,
-          mainAxisSpacing: 16.0,
-          children: [
-            _buildGridTile(
-              title: 'Employees',
-              icon: Icons.person,
-              onTap: () {
-                // Navigate to Employees screen
-              },
+      appBar: CustomizableAppBar(title: 'Admin Panel'),
+      body: Stack(alignment: Alignment.center,
+        children: [
+          Image.asset('assets/images/logo.png'),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: GridView.count(
+              crossAxisCount: 2, // 2 items per row
+              crossAxisSpacing: 16.0,
+              mainAxisSpacing: 16.0,
+              children: [
+                buildGridTile(
+                  title: 'Employees',
+                  icon: CupertinoIcons.person,
+                  onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeesTabBar(),));              },
+                ),
+                buildGridTile(
+                  title: 'Students',
+                  icon: Icons.school_outlined,
+                  onTap: () {
+          Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentTabBar(),)) ;             },
+                ),
+                buildGridTile(
+                  title: 'Internships',
+                  icon: Icons.work_outline,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const InternTabBar(),
+                        ));
+                  },
+                ),
+                buildGridTile(
+                  title: 'Announcements',
+                  icon: Icons.announcement_outlined,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const adminAnnouncementsPage(),
+                        ));
+                  },
+                ),
+                buildGridTile(
+                  title: 'Assign Project',
+                  icon: Icons.assignment_ind_outlined,
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const adminAnnouncementsPage(),
+                        ));
+                  },
+                ),
+              ],
             ),
-            _buildGridTile(
-              title: 'Students',
-              icon: Icons.school,
-              onTap: () {
-                // Navigate to Students screen
-              },
-            ),
-            _buildGridTile(
-              title: 'Internships',
-              icon: Icons.work,
-              onTap: () {
-                // Navigate to Internships screen
-              },
-            ),
-            _buildGridTile(
-              title: 'Announcements',
-              icon: Icons.announcement,
-              onTap: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => adminAnnouncementsPage(),));
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildGridTile({required String title, required IconData icon, required VoidCallback onTap}) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Card(
-        elevation: 4.0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12.0)),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: 48.0, color: FColor.primaryColor1), // Use your primary color here
-            SizedBox(height: 16.0),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 18.0,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

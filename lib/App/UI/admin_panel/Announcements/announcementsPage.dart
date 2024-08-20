@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fasolution/App/Resources/Components/AppBar2.dart';
 import 'package:fasolution/App/UI/admin_panel/Announcements/makeAnouncementsPage.dart';
 import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:flutter/cupertino.dart';
@@ -13,10 +14,9 @@ class adminAnnouncementsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Announcements'),
-        backgroundColor: FColor.primaryColor1,
-      ),
+      appBar: CustomizableAppBar(title: 'Announcement',leadingIcon: Icon(CupertinoIcons.back),onLeadingPressed: (){
+        Navigator.pop(context);
+      },),
       body: Column(
         children: [
           TextButton(onPressed: (){Navigator.push(context, MaterialPageRoute(builder: (context) => CreateAnnouncementPage(),));}, child: Text('Make a new announcement',style: TextStyle(color: Colors.blue,fontFamily: 'Poppins',decoration:TextDecoration.underline),)),

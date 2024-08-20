@@ -28,8 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final FocusNode _passwordNode = FocusNode();
   ValueNotifier<bool> Obscure = ValueNotifier<bool>(true);
 
-  // New variable for storing the selected role
-  String selectedRole = 'User'; // Default role
+  String selectedRole = 'User';
 
   // Predefined admin credentials
   final String adminEmail = 'ahmad@gmail.com';

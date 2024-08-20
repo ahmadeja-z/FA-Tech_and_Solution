@@ -365,6 +365,7 @@ class _SignUp_ViewState extends State<SignUp_View> {
       credential = await FirebaseAuth.instance
           .createUserWithEmailAndPassword(email: email, password: password);
     } on FirebaseAuthException catch (ex) {
+      Navigator.pop(context);
       print(ex.toString());
       UiHelper.showErrorDialog('Exception', ex.toString(), context);
     }
@@ -403,7 +404,7 @@ class _SignUp_ViewState extends State<SignUp_View> {
         },
       ).onError(
         (error, stackTrace) {
-          showMessage.errorToastMessage(error.toString());
+          Navigator.pop(context);
           UiHelper.showErrorDialog('Exception', error.toString(), context);
         },
       );
