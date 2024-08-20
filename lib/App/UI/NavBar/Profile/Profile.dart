@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/UI/NavBar/Profile/FileViewer.dart';
 import 'package:fasolution/App/UI/NavBar/Profile/edit_profile.dart';
@@ -12,10 +13,27 @@ class Profile extends StatefulWidget {
   Profile({super.key, required this.userModel, required this.FirebaseUser});
   final User FirebaseUser;
   final UserModel userModel;
+
   @override
   State<Profile> createState() => _ProfileState();
 }
+
 class _ProfileState extends State<Profile> {
+  late Stream<List<String>> _ongoingProjectsStream;
+
+  @override
+  void initState() {
+    super.initState();
+    _ongoingProjectsStream = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userModel.userId)
+        .snapshots()
+        .map((snapshot) {
+      final userData = snapshot.data();
+      return List<String>.from(userData?['ongoingProjects'] ?? []);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -27,8 +45,7 @@ class _ProfileState extends State<Profile> {
             // Profile Picture
             CircleAvatar(
               radius: 60,
-              backgroundImage:
-                  NetworkImage(widget.userModel.profilePictureUrl.toString()),
+              backgroundImage: NetworkImage(widget.userModel.profilePictureUrl.toString()),
             ),
             SizedBox(height: 20),
 
@@ -41,7 +58,6 @@ class _ProfileState extends State<Profile> {
                 color: FColor.primaryColor1,
               ),
             ),
-
             SizedBox(height: 10),
             Text(
               widget.userModel.email.toString(),
@@ -53,10 +69,8 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: 30),
 
             // User Details
-            _buildInfoRow(Icons.calendar_today, 'Joining Date',
-                widget.userModel.joiningDate.toString()),
-            _buildInfoRow(
-                CupertinoIcons.person, 'Role', widget.userModel.role.toString()),
+            _buildInfoRow(Icons.calendar_today, 'Joining Date', widget.userModel.joiningDate.toString()),
+            _buildInfoRow(CupertinoIcons.person, 'Role', widget.userModel.role.toString()),
             _buildInfoRow(Icons.work_outline, 'Career', widget.userModel.carrier.toString()),
             _buildInfoRow(CupertinoIcons.check_mark_circled, 'Attendance', widget.userModel.attendance.toString()),
             SizedBox(height: 30),
@@ -65,14 +79,15 @@ class _ProfileState extends State<Profile> {
             Text(
               'Completed Projects',
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: FColor.primaryColor1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: FColor.primaryColor1,
+              ),
             ),
             SizedBox(height: 10),
             _buildProjectsTable(
               context,
-              ['Project Alpha', 'Project Beta'],
+              widget.userModel.completedProjects ?? [],
               Icons.check_circle_outline,
               FColor.primaryColor2,
             ),
@@ -82,16 +97,32 @@ class _ProfileState extends State<Profile> {
             Text(
               'Ongoing Projects',
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: FColor.primaryColor1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: FColor.primaryColor1,
+              ),
             ),
             SizedBox(height: 10),
-            _buildProjectsTable(
-              context,
-              ['Project Gamma', 'Project Delta'],
-              Icons.timelapse,
-              FColor.secondaryColor1,
+            StreamBuilder<List<String>>(
+              stream: _ongoingProjectsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No ongoing projects.'));
+                }
+
+                return _buildProjectsTable(
+                  context,
+                  snapshot.data!,
+                  Icons.timelapse,
+                  FColor.secondaryColor1,
+                );
+              },
             ),
 
             // Documents Section
@@ -99,9 +130,10 @@ class _ProfileState extends State<Profile> {
             Text(
               'Documents',
               style: TextStyle(
-                  fontSize: 20,
-                  fontWeight: FontWeight.bold,
-                  color: FColor.primaryColor1),
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: FColor.primaryColor1,
+              ),
             ),
             SizedBox(height: 10),
             DocumentRow(
@@ -113,7 +145,8 @@ class _ProfileState extends State<Profile> {
                     MaterialPageRoute(
                       builder: (context) => FileViewer(
                         title: 'CV',
-                          fileUrl: widget.userModel.cvUrl.toString()),
+                        fileUrl: widget.userModel.cvUrl.toString(),
+                      ),
                     ));
               },
             ),
@@ -126,7 +159,8 @@ class _ProfileState extends State<Profile> {
                     MaterialPageRoute(
                       builder: (context) => FileViewer(
                         title: 'Result Card',
-                          fileUrl: widget.userModel.resultCardUrl.toString()),
+                        fileUrl: widget.userModel.resultCardUrl.toString(),
+                      ),
                     ));
               },
             ),
@@ -139,15 +173,23 @@ class _ProfileState extends State<Profile> {
                     MaterialPageRoute(
                       builder: (context) => FileViewer(
                         title: 'Experience Letter',
-                          fileUrl:
-                              widget.userModel.experienceLetterUrl.toString()),
+                        fileUrl: widget.userModel.experienceLetterUrl.toString(),
+                      ),
                     ));
               },
             ),
             SizedBox(height: 30),
             ElevatedButton(
               onPressed: () {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfile(userModel: widget.userModel, firebaseUser: widget.FirebaseUser),));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => EditProfile(
+                      userModel: widget.userModel,
+                      firebaseUser: widget.FirebaseUser,
+                    ),
+                  ),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: FColor.primaryColor1,
@@ -156,13 +198,12 @@ class _ProfileState extends State<Profile> {
                 ),
                 padding: EdgeInsets.symmetric(horizontal: 30, vertical: 15),
               ),
-              child: Text('Edit Profile',style: TextStyle(
-                color: Colors.white
-              ),),
+              child: Text(
+                'Edit Profile',
+                style: TextStyle(color: Colors.white),
+              ),
             ),
-            SizedBox(
-              height: 250,
-            )
+            SizedBox(height: 250),
           ],
         ),
       ),

@@ -7,9 +7,9 @@ import 'package:fasolution/App/UI/NavBar/Profile/Profile.dart';
 import 'package:fasolution/App/UI/OnBoarding/onBoarding.dart';
 import 'package:fasolution/App/UI/OnBoarding/starting_screen.dart';
 import 'package:fasolution/App/UI/admin_panel/Announcements/announcementsPage.dart';
-import 'package:fasolution/App/UI/admin_panel/Emplyees/employees_TabBar_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Internship/TabBar/web_Internship_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/student_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Emplyees/employees_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Internship/TabBar/web_Internship_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Student/student_TabBar_screen.dart';
 import 'package:fasolution/App/UI/admin_panel/admin_navigation.dart';
 import 'package:fasolution/App/UI/app_splash_screen.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ import 'App/UI/Autentication/SignUp/CompleteProfile.dart';
 import 'App/UI/NavBar/Announsments/Announsments.dart';
 import 'App/UI/NavBar/Home/people_info.dart';
 import 'App/UI/NavBar/nav_screen.dart';
-import 'App/UI/admin_panel/Internship/InternTabBar.dart';
+import 'App/UI/admin_panel/Members/Internship/InternTabBar.dart';
 import 'firebase_options.dart';
 var uid=Uuid();
 void main() async {
@@ -46,7 +46,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      home: AdminPanelScreen(),
+      home: SplashScreen(),
     );
   }
 }

@@ -1,17 +1,20 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/flutterFlow_Student_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/flutter_Student_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/web_Student_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Internship/TabBar/flutterFlow_Internship_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Internship/TabBar/flutter_internship_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../Resources/Color.dart';
-class StudentTabBar extends StatefulWidget {
-  const StudentTabBar({super.key});
+
+import '../../../../Resources/Color.dart';
+import 'TabBar/web_Internship_screen.dart';
+
+class InternTabBar extends StatefulWidget {
+  const InternTabBar({super.key});
+
   @override
-  _StudentTabBarState createState() => _StudentTabBarState();
+  _InternTabBarState createState() => _InternTabBarState();
 }
 
-class _StudentTabBarState extends State<StudentTabBar>
+class _InternTabBarState extends State<InternTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -30,9 +33,9 @@ class _StudentTabBarState extends State<StudentTabBar>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomizableAppBar(title: 'Student',
-        leadingIcon:Icon(CupertinoIcons.back),
-        onLeadingPressed: (){Navigator.pop(context);},)
+      appBar: CustomizableAppBar(title: 'Internship',
+      leadingIcon:Icon(CupertinoIcons.back),
+      onLeadingPressed: (){Navigator.pop(context);},)
       ,
       body: Column(
         children: [
@@ -72,9 +75,9 @@ class _StudentTabBarState extends State<StudentTabBar>
             child: TabBarView(
               controller: _tabController,
               children: [
-                WebStudent(),
-                FlutterFlowStudent(),
-                FlutterStudent(),
+                WebIntern(),
+                FlutterFlowIntern(),
+                FlutterIntern(),
 
               ],
             ),

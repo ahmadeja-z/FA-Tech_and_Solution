@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../../Services/FirebaseDataGetter.dart'; // Import the widget
+import '../../../../../Services/FirebaseDataGetter.dart'; // Import the widget
 
-class FlutterFlowEmployees extends StatelessWidget {
-  const FlutterFlowEmployees({super.key});
+class FlutterFlowStudent extends StatelessWidget {
+  const FlutterFlowStudent({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +13,7 @@ class FlutterFlowEmployees extends StatelessWidget {
       ),
       body: UserListWidget(
         role: 'role',
-        whichRole: 'Employee',
+        whichRole: 'Student',
         emptyMessage: 'There are no FlutterFlow Student present',
         career: 'carrier',
         whichCareer: 'Flutter Flow',

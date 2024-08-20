@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
 
-import '../../../../Services/FirebaseDataGetter.dart'; // Import the widget
+import '../../../../../Services/FirebaseDataGetter.dart';
 
-class WebStudent extends StatelessWidget {
-  const WebStudent({super.key});
+class WebEmployees extends StatelessWidget {
+  const WebEmployees({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(automaticallyImplyLeading: false,
+      appBar: AppBar(
         title: Text('Web Development'),
+        automaticallyImplyLeading: false,
       ),
       body: UserListWidget(
         role: 'role',
-        whichRole: 'Student',
+        whichRole: 'Employee',
         emptyMessage: 'There are no Web development interne present',
         career: 'carrier',
         whichCareer: 'Web Development',

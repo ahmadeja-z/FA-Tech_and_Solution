@@ -1,105 +1,115 @@
-import 'package:flutter/cupertino.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:fasolution/App/Resources/Components/AppBar2.dart';
+import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:flutter/material.dart';
-import 'package:fasolution/App/Resources/Color.dart';
+import 'package:intl/intl.dart';
 
-import '../../Resources/Components/AppBar2.dart';
+class PendingProjectsPage extends StatefulWidget {
+  final String userId; // The ID of the user
 
-class NotificationsPage extends StatelessWidget {
-  // Sample notifications data
-  final List<Map<String, dynamic>> notifications = [
-    {
-      'title': 'New Feature Available',
-      'message': 'We have added a new feature to the app. Check it out!',
-      'icon': Icons.new_releases,
-    },
-    {
-      'title': 'System Maintenance',
-      'message': 'The system will be down for maintenance on August 15th.',
-      'icon': Icons.build,
-    },
-    {
-      'title': 'Update Available',
-      'message': 'A new version of the app is available. Please update.',
-      'icon': Icons.update,
-    },
-    // Add more notifications here
-  ];
+  const PendingProjectsPage({Key? key, required this.userId}) : super(key: key);
+
+  @override
+  _PendingProjectsPageState createState() => _PendingProjectsPageState();
+}
+
+class _PendingProjectsPageState extends State<PendingProjectsPage> {
+  bool _isLoading = false;
+
+  Future<void> _acceptProject(String projectId) async {
+    setState(() {
+      _isLoading = true;
+    });
+
+    try {
+      final userRef = FirebaseFirestore.instance.collection('users').doc(widget.userId);
+      final projectRef = FirebaseFirestore.instance.collection('projects').doc(projectId);
+
+      // Fetch the pending project data
+      final pendingProject = await FirebaseFirestore.instance.collection('pendingAssignments').doc(widget.userId).collection('projects').doc(projectId).get();
+
+      if (pendingProject.exists) {
+        final projectData = pendingProject.data()!;
+
+        // Move the project to the user's ongoingProjects
+        await userRef.update({
+          'ongoingProjects': FieldValue.arrayUnion([projectId]),
+        });
+
+        // Update the project status
+        await projectRef.update({
+          'status': 'ongoing', // Update status to 'ongoing'
+        });
+
+        // Remove the project from pendingAssignments
+        await FirebaseFirestore.instance.collection('pendingAssignments').doc(widget.userId).collection('projects').doc(projectId).delete();
+
+        UiHelper.showErrorDialog('Project Acceptance', 'Project has been accepted and is now ongoing', context);
+      } else {
+        UiHelper.showErrorDialog('Error', 'Project not found in pending assignments', context);
+      }
+    } catch (e) {
+      UiHelper.showErrorDialog('Error on accepting project', e.toString(), context);
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: CustomizableAppBar(title: 'Notification',leadingIcon: Icon(CupertinoIcons.back),
-        onLeadingPressed: (){
-          Navigator.pop(context);
-        },),
-    body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ListView(
-          children: notifications.map((notification) {
-            return NotificationCard(
-              title: notification['title']!,
-              message: notification['message']!,
-              icon: notification['icon']!,
-            );
-          }).toList(),
-        ),
+      appBar: CustomizableAppBar(
+        title: 'Pending Projects',
       ),
-    );
-  }
-}
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance
+            .collection('pendingAssignments')
+            .doc(widget.userId)
+            .collection('projects')
+            .snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text(snapshot.error.toString()));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('No pending projects.'));
+          }
 
-class NotificationCard extends StatelessWidget {
-  final String title;
-  final String message;
-  final IconData icon;
+          List<DocumentSnapshot> projects = snapshot.data!.docs;
 
-  const NotificationCard({
-    Key? key,
-    required this.title,
-    required this.message,
-    required this.icon,
-  }) : super(key: key);
+          return ListView.builder(
+            itemCount: projects.length,
+            itemBuilder: (context, index) {
+              final project = projects[index].data() as Map<String, dynamic>;
+              final projectId = project['projectId'] as String;
+              final title = project['title'] as String;
+              final description = project['description'] as String;
+              final status = project['status'] as String;
+              final createdAt = project['createdAt'] as String;
 
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 4,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
-      margin: EdgeInsets.only(bottom: 16),
-      child: ListTile(
-        leading: CircleAvatar(
-          backgroundColor: FColor.primaryColor1, // Customize icon background color
-          child: Icon(
-            icon,
-            color: FColor.white,
-            size: 28,
-          ),
-        ),
-        title: Text(
-          title,
-          style: TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.bold,
-            color: FColor.primaryColor1, // Customize text color
-          ),
-        ),
-        subtitle: Text(
-          message,
-          style: TextStyle(
-            fontSize: 14,
-            color: FColor.primaryColor2, // Customize text color
-          ),
-        ),
-        trailing: IconButton(
-          icon: Icon(Icons.arrow_forward_ios),
-          onPressed: () {
-            // Handle action button press
-            // For example, navigate to a detailed view or perform an action
-          },
-        ),
-        contentPadding: EdgeInsets.all(16),
+              return Card(
+                margin: EdgeInsets.all(8.0),
+                child: ListTile(
+                  contentPadding: EdgeInsets.all(16.0),
+                  title: Text(title),
+                  subtitle: Text(description),
+                  trailing: ElevatedButton(
+                    onPressed: _isLoading ? null : () => _acceptProject(projectId),
+                    child: _isLoading
+                        ? CircularProgressIndicator()
+                        : Text('Accept'),
+                  ),
+                  isThreeLine: true,
+                ),
+              );
+            },
+          );
+        },
       ),
     );
   }

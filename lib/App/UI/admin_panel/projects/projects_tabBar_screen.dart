@@ -1,20 +1,19 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
-import 'package:fasolution/App/UI/admin_panel/Internship/TabBar/flutterFlow_Internship_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Internship/TabBar/flutter_internship_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutterFlow_screens.dart';
+import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects.dart';
+import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/webdevelopment_screens.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Resources/Color.dart';
-import 'TabBar/web_Internship_screen.dart';
 
-class InternTabBar extends StatefulWidget {
-  const InternTabBar({super.key});
-
+class ProjectsTabBar extends StatefulWidget {
+  const ProjectsTabBar({super.key});
   @override
-  _InternTabBarState createState() => _InternTabBarState();
+  _ProjectsTabBarState createState() => _ProjectsTabBarState();
 }
 
-class _InternTabBarState extends State<InternTabBar>
+class _ProjectsTabBarState extends State<ProjectsTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -33,21 +32,23 @@ class _InternTabBarState extends State<InternTabBar>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomizableAppBar(title: 'Internship',
-      leadingIcon:Icon(CupertinoIcons.back),
-      onLeadingPressed: (){Navigator.pop(context);},)
-      ,
+      appBar: CustomizableAppBar(
+        title: 'Projects',
+        leadingIcon: const Icon(CupertinoIcons.back),
+        onLeadingPressed: () {
+          Navigator.pop(context);
+        },
+      ),
       body: Column(
         children: [
           Container(
-            margin: EdgeInsets.all(16.0),
+            margin: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               color: Colors.white,
               borderRadius: BorderRadius.circular(30.0),
-              boxShadow: [
+              boxShadow: const [
                 BoxShadow(
                   color: Colors.black26,
-
                   blurRadius: 3.0,
                 ),
               ],
@@ -55,14 +56,13 @@ class _InternTabBarState extends State<InternTabBar>
             child: TabBar(
               controller: _tabController,
               labelColor: Colors.white,
-              labelStyle: TextStyle(fontFamily: 'Lato'),
+              labelStyle: const TextStyle(fontFamily: 'Lato'),
               unselectedLabelColor: Colors.grey,
               indicator: BoxDecoration(
                 color: FColor.primaryColor1,
                 borderRadius: BorderRadius.circular(10.0),
-
               ),
-              dividerHeight: 0 ,
+              dividerHeight: 0,
               isScrollable: true,
               tabs: const [
                 Tab(text: ' Web Development '),
@@ -74,11 +74,10 @@ class _InternTabBarState extends State<InternTabBar>
           Expanded(
             child: TabBarView(
               controller: _tabController,
-              children: [
-                WebIntern(),
-                FlutterFlowIntern(),
-                FlutterIntern(),
-
+              children: const [
+                WebDevelopmentProjects(),
+                FlutterFlowProjects(),
+                FlutterProjects()
               ],
             ),
           ),

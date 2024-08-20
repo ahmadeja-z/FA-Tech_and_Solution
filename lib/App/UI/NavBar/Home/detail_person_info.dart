@@ -7,18 +7,18 @@ import '../../../Resources/Color.dart';
 import '../../../Resources/Components/DetailPerson.dart';
 
 class DetailProfileInfo extends StatefulWidget {
-  DetailProfileInfo({
-    super.key,
-    required this.name,
-    required this.surName,
-    required this.profileImage,
-    required this.carrier,
-    required this.joiningDate,
-    required this.role,
-    required this.attendance,
-    required this.email,
-    this.OnDelete,
-  });
+  DetailProfileInfo(
+      {super.key,
+      required this.name,
+      required this.surName,
+      required this.profileImage,
+      required this.carrier,
+      required this.joiningDate,
+      required this.role,
+      required this.attendance,
+      required this.email,
+      this.OnDelete,
+      this.OnAssign});
   final String name;
   final String surName;
   final String email;
@@ -28,6 +28,7 @@ class DetailProfileInfo extends StatefulWidget {
   final String role;
   final String attendance;
   final VoidCallback? OnDelete;
+  final VoidCallback? OnAssign;
 
   @override
   State<DetailProfileInfo> createState() => _DetailProfileInfoState();
@@ -90,9 +91,23 @@ class _DetailProfileInfoState extends State<DetailProfileInfo> {
             buildInfoRow(Icons.person, 'Role', widget.role),
             buildInfoRow(
                 Icons.check_circle_outline, 'Attendance', widget.attendance),
-            SizedBox(height: 30),
-            if (widget.OnDelete != null)
-              DeleteButton(onPressed: widget.OnDelete!)
+            if (widget.OnDelete != null) ...[
+              SizedBox(height: 30),
+              DeleteButton(onPressed: widget.OnDelete!),
+            ],
+            if (widget.OnAssign != null) ...[
+              SizedBox(
+                height: 30,
+              ),
+              TextButton(
+                  onPressed: widget.OnAssign,
+                  child: Text(
+                    'Assign an Project',
+                    style: TextStyle(
+                        decoration: TextDecoration.underline,
+                        color: Colors.blue),
+                  ))
+            ]
           ],
         ),
       ),

@@ -5,6 +5,7 @@ import 'package:fasolution/App/Resources/Color.dart';
 import '../../UI/NavBar/Notification.dart';
 
 class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final String UserId;
   final String title;
   final bool showDrawerButton; // Controls visibility of the drawer button
   final bool showSearchButton; // Controls visibility of the search button
@@ -13,7 +14,7 @@ class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
     Key? key,
     required this.title,
     this.showDrawerButton = true, // Default to true
-    this.showSearchButton = true, // Default to true
+    this.showSearchButton = true, required this.UserId, // Default to true
   }) : super(key: key);
 
   @override
@@ -56,7 +57,7 @@ class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => NotificationsPage(),
+                      builder: (context) => PendingProjectsPage(userId: UserId,),
                     ));
               },
             ),

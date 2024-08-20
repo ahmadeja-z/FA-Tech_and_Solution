@@ -1,12 +1,12 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
 import 'package:fasolution/App/UI/admin_panel/Announcements/announcementsPage.dart';
-import 'package:fasolution/App/UI/admin_panel/Emplyees/employees_TabBar_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/student_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Emplyees/employees_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Student/student_TabBar_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/projects/projects_tabBar_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../Resources/Color.dart';
 import '../../Resources/Components/AdminPanelGrid.dart';
-import 'Internship/InternTabBar.dart';
+import 'Members/Internship/InternTabBar.dart';
 
 class AdminPanelScreen extends StatelessWidget {
   const AdminPanelScreen({super.key});
@@ -66,7 +66,7 @@ class AdminPanelScreen extends StatelessWidget {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const adminAnnouncementsPage(),
+                          builder: (context) => ProjectsTabBar(),
                         ));//
                   },
                 ),

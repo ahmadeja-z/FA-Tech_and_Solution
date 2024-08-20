@@ -1,5 +1,6 @@
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/UI/Autentication/Login.dart';
+import 'package:fasolution/App/UI/NavBar/Projects/project_detail_screen.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -42,12 +43,14 @@ class _NavigationScreenState extends State<NavigationScreen> {
         AttendancePage(userModel: widget.userModel,),
         AnnouncementsPage(),
         Profile(userModel: widget.userModel, FirebaseUser: widget.user),
+    UserProjectsScreen(userModel: widget.userModel,),
       ];
   final List<String> _titles = [
     'People',
     'Attendance',
     'Announcements',
     'Profile',
+    'Projects'
   ];
 
   int _currentIndex = 0;
@@ -56,7 +59,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar:
-          CustomizedAppBar(title: _titles[_currentIndex]), // Pass dynamic title
+          CustomizedAppBar(title: _titles[_currentIndex], UserId: widget.userModel.userId.toString(),), // Pass dynamic title
       backgroundColor:
           Colors.transparent, // Transparent background for the main content
       drawer: SideBox(
@@ -125,7 +128,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
                           label: 'Announcement'),
                       BottomNavigationBarItem(
                           icon: Icon(CupertinoIcons.person), label: 'Profile'),
-                    ],
+                 BottomNavigationBarItem(icon: Icon(Icons.work_outline),label: 'Projects')   ],
                   ),
                 ),
               ),

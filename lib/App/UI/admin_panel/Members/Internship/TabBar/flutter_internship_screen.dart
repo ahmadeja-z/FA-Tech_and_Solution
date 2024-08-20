@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../../Services/FirebaseDataGetter.dart'; // Import the widget
+import '../../../../../Services/FirebaseDataGetter.dart'; // Import the widget
 
 class FlutterIntern extends StatelessWidget {
   const FlutterIntern({super.key});

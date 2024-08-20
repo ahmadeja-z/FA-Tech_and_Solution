@@ -1,13 +1,10 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
-import 'package:fasolution/App/UI/admin_panel/Emplyees/TabBar/flutterFlow_Employees_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Emplyees/TabBar/flutter_Employees_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Emplyees/TabBar/web_Employees_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/flutterFlow_Student_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/flutter_Student_screen.dart';
-import 'package:fasolution/App/UI/admin_panel/Student/TabBar/web_Student_screen.dart';
+import 'package:fasolution/App/UI/admin_panel/Members/Emplyees/TabBar/flutter_Employees_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../../Resources/Color.dart';
+import '../../../../Resources/Color.dart';
+import 'TabBar/flutterFlow_Employees_screen.dart';
+import 'TabBar/web_Employees_screen.dart';
 class EmployeesTabBar extends StatefulWidget {
   const EmployeesTabBar({super.key});
   @override
