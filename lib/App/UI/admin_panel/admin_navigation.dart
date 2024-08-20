@@ -67,7 +67,7 @@ class AdminPanelScreen extends StatelessWidget {
                         context,
                         MaterialPageRoute(
                           builder: (context) => const adminAnnouncementsPage(),
-                        ));
+                        ));//
                   },
                 ),
               ],
