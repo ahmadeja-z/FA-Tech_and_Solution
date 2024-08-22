@@ -1,4 +1,3 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class UserModel {
   String? id;
@@ -15,6 +14,7 @@ class UserModel {
   String? role;
   List<String>? completedProjects;
   List<String>? ongoingProjects;
+  List<String>? ongoingProjectIds;
   String ? attendance;
 
   UserModel({
@@ -33,6 +33,7 @@ class UserModel {
     this.completedProjects,
     this.ongoingProjects,
     this.attendance,
+    this.ongoingProjectIds
   });
 
   UserModel.fromMap(Map<String, dynamic> map) {
@@ -49,6 +50,7 @@ class UserModel {
     role = map['role'] ?? '';
     completedProjects = List<String>.from(map['completedProjects'] ?? []);
     ongoingProjects = List<String>.from(map['ongoingProjects'] ?? []);
+    ongoingProjectIds = List<String>.from(map['ongoingProjectIds'] ?? []);
     attendance = map['attendance'] ?? '0';
   }
 
@@ -68,11 +70,12 @@ class UserModel {
       'completedProjects': completedProjects,
       'ongoingProjects': ongoingProjects,
       'attendance': attendance,
+      'ongoingProjectIds':ongoingProjectIds
     };
   }
 
   @override
   String toString() {
-    return 'UserModel(id: $id, userId: $userId, name: $name, surName: $surName, email: $email, profilePictureUrl: $profilePictureUrl, cvUrl: $cvUrl, resultCardUrl: $resultCardUrl, experienceLetterUrl: $experienceLetterUrl, carrier: $carrier, joiningDate: $joiningDate, role: $role, completedProjects: $completedProjects, ongoingProjects: $ongoingProjects, attendance: $attendance)';
+    return 'UserModel(id: $id, userId: $userId, name: $name, surName: $surName, email: $email, profilePictureUrl: $profilePictureUrl, cvUrl: $cvUrl, resultCardUrl: $resultCardUrl, experienceLetterUrl: $experienceLetterUrl, carrier: $carrier, joiningDate: $joiningDate, role: $role, completedProjects: $completedProjects, ongoingProjects: $ongoingProjects,ongoingProjectIds:$ongoingProjectIds, attendance: $attendance)';
   }
 }

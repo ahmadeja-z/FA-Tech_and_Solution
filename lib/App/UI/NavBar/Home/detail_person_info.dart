@@ -1,4 +1,3 @@
-import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
 import 'package:fasolution/App/Resources/Components/deleteButton.dart';
 import 'package:flutter/cupertino.dart';

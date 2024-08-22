@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fasolution/App/Resources/Color.dart';
 
 import '../../UI/NavBar/Notification.dart';
+import '../../UI/NavBar/Projects/Projects/pending_project.dart';
 
 class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String UserId;
@@ -57,7 +58,7 @@ class CustomizedAppBar extends StatelessWidget implements PreferredSizeWidget {
                 Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => PendingProjectsPage(userId: UserId,),
+                      builder: (context) => NotificationScreen(),
                     ));
               },
             ),

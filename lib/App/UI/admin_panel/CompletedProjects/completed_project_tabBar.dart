@@ -1,21 +1,19 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_flow_projects/flutterFlow_tabBAr.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects/flutter_projects/onGoing_flutter_projects.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects/flutter_projects_tabBar.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/web_development_projects/WebProjects/onGoing_webProjects.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/web_development_projects/web_development_tabBar.dart';
+import 'package:fasolution/App/UI/admin_panel/CompletedProjects/CompleteProjects/completed_flutterFlow_projects.dart';
+import 'package:fasolution/App/UI/admin_panel/CompletedProjects/CompleteProjects/completed_flutter_projects.dart';
+import 'package:fasolution/App/UI/admin_panel/CompletedProjects/CompleteProjects/completed_web_projects.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Resources/Color.dart';
 
-class ProjectsTabBar extends StatefulWidget {
-  const ProjectsTabBar({super.key});
+class CompletedProjectsTabBar extends StatefulWidget {
+  const CompletedProjectsTabBar({super.key});
   @override
-  _ProjectsTabBarState createState() => _ProjectsTabBarState();
+  _CompletedProjectsTabBarState createState() => _CompletedProjectsTabBarState();
 }
 
-class _ProjectsTabBarState extends State<ProjectsTabBar>
+class _CompletedProjectsTabBarState extends State<CompletedProjectsTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
@@ -35,7 +33,7 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomizableAppBar(
-        title: 'Projects',
+        title: 'Completed Projects',
         leadingIcon: const Icon(CupertinoIcons.back),
         onLeadingPressed: () {
           Navigator.pop(context);
@@ -77,9 +75,9 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
             child: TabBarView(
               controller: _tabController,
               children: const [
-                WebDevelopmentTabBar(),
-                FlutterFlowTabBar(),
-                FlutterTabBar()
+                CompletedWebProjects(),
+                CompletedFlutterFlowProjects(),
+                CompletedFlutterProjects()
               ],
             ),
           ),

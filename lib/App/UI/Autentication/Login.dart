@@ -4,7 +4,6 @@ import 'package:fasolution/App/Resources/Color.dart';
 import 'package:fasolution/App/UI/Autentication/SignUp/SignUp.dart';
 import 'package:fasolution/App/UI/NavBar/nav_screen.dart';
 import 'package:fasolution/App/UI/admin_panel/admin_navigation.dart';
-import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
 import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';

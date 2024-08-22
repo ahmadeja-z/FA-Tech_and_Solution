@@ -20,17 +20,26 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   late Stream<List<String>> _ongoingProjectsStream;
+  late Stream<List<String>> _completeProjectsStream;
 
   @override
   void initState() {
     super.initState();
-    _ongoingProjectsStream = FirebaseFirestore.instance
+
+    // Fetch ongoing and completed projects
+    _ongoingProjectsStream = fetchProjects(widget.userModel.userId.toString(), 'ongoingProjects');
+    _completeProjectsStream = fetchProjects(widget.userModel.userId.toString(), 'completedProjects');
+  }
+
+  // Function to fetch projects based on the field name
+  Stream<List<String>> fetchProjects(String userId, String projectField) {
+    return FirebaseFirestore.instance
         .collection('users')
-        .doc(widget.userModel.userId)
+        .doc(userId)
         .snapshots()
         .map((snapshot) {
       final userData = snapshot.data();
-      return List<String>.from(userData?['ongoingProjects'] ?? []);
+      return List<String>.from(userData?[projectField] ?? []);
     });
   }
 
@@ -42,16 +51,15 @@ class _ProfileState extends State<Profile> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: <Widget>[
-            // Profile Picture
+
             CircleAvatar(
               radius: 60,
               backgroundImage: NetworkImage(widget.userModel.profilePictureUrl.toString()),
             ),
             SizedBox(height: 20),
 
-            // Name and Email
             Text(
-              '${widget.userModel.name.toString()} ${widget.userModel.surName.toString()}',
+              widget.userModel.name.toString(),
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -69,6 +77,7 @@ class _ProfileState extends State<Profile> {
             SizedBox(height: 30),
 
             // User Details
+            _buildInfoRow(CupertinoIcons.person, 'Sur Name', widget.userModel.surName.toString()),
             _buildInfoRow(Icons.calendar_today, 'Joining Date', widget.userModel.joiningDate.toString()),
             _buildInfoRow(CupertinoIcons.person, 'Role', widget.userModel.role.toString()),
             _buildInfoRow(Icons.work_outline, 'Career', widget.userModel.carrier.toString()),
@@ -85,11 +94,26 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             SizedBox(height: 10),
-            _buildProjectsTable(
-              context,
-              widget.userModel.completedProjects ?? [],
-              Icons.check_circle_outline,
-              FColor.primaryColor2,
+            StreamBuilder<List<String>>(
+              stream: _completeProjectsStream,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (snapshot.hasError) {
+                  return Center(child: Text('Error: ${snapshot.error}'));
+                }
+                if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return Center(child: Text('No completed projects.'));
+                }
+
+                return _buildProjectsTable(
+                  context,
+                  snapshot.data!,
+                  Icons.check_circle_outline,
+                  FColor.primaryColor2,
+                );
+              },
             ),
             SizedBox(height: 30),
 
@@ -242,7 +266,18 @@ class _ProfileState extends State<Profile> {
         1: FlexColumnWidth(),
       },
       border: TableBorder.all(color: FColor.GreyBrown),
-      children: projects.map((project) {
+      children: projects.isEmpty
+          ? [
+        TableRow(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Text('No projects available'),
+            ),
+          ],
+        )
+      ]
+          : projects.map((project) {
         return TableRow(
           children: [
             Padding(

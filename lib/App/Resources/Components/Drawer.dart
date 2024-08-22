@@ -25,13 +25,13 @@ class SideBox extends StatelessWidget {
             currentAccountPicture: CircleAvatar(
               backgroundImage: NetworkImage(profilePictureUrl),
             ),
-            decoration: BoxDecoration(
+            decoration: const BoxDecoration(
               color: Colors.blue,
             ),
           ),
           ListTile(
-            leading: Icon(Icons.logout),
-            title: Text('Log Out'),
+            leading: const Icon(Icons.logout),
+            title: const Text('Log Out'),
             onTap:onTap,
           ),
         ],

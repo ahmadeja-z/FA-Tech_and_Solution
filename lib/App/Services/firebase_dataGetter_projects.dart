@@ -1,15 +1,15 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fasolution/App/Model/Model/project_model.dart';
-import 'package:fasolution/App/Services/FirebaseHelper.dart';
-import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
+
 import 'package:flutter/material.dart';
 
 import '../Resources/Components/assingned_project_info.dart';
 
 class AssignedProject extends StatefulWidget {
   final String roleType; // Role type to filter projects
+  final String? statusType;
 
-  const AssignedProject({super.key, required this.roleType});
+  const AssignedProject({super.key, required this.roleType, this.statusType});
 
   @override
   State<AssignedProject> createState() => _AssignedProjectState();
@@ -23,7 +23,8 @@ class _AssignedProjectState extends State<AssignedProject> {
       body: StreamBuilder<QuerySnapshot>(
         stream: FirebaseFirestore.instance
             .collection('projects')
-            .where('type', isEqualTo: widget.roleType) // Use the roleType to filter
+            .where('type', isEqualTo: widget.roleType).
+        where('status',isEqualTo: widget.statusType)
             .snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {

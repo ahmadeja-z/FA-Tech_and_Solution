@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../../Resources/Color.dart';
-import '../../../Resources/Components/AppBar.dart';
 import '../../../Resources/Components/PersonCard.dart';
 
 class PeoplePage extends StatefulWidget {

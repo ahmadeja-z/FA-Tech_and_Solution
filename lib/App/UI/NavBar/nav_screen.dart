@@ -1,6 +1,6 @@
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/UI/Autentication/Login.dart';
-import 'package:fasolution/App/UI/NavBar/Projects/project_detail_screen.dart';
+import 'package:fasolution/App/UI/NavBar/Projects/user_project_TabBar.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -43,7 +43,7 @@ class _NavigationScreenState extends State<NavigationScreen> {
         AttendancePage(userModel: widget.userModel,),
         AnnouncementsPage(),
         Profile(userModel: widget.userModel, FirebaseUser: widget.user),
-    UserProjectsScreen(userModel: widget.userModel,),
+    UserProjectsTabBar(userId: widget.userModel.userId.toString(), userModel: widget.userModel,)
       ];
   final List<String> _titles = [
     'People',

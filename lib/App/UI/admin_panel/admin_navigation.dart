@@ -1,5 +1,6 @@
 import 'package:fasolution/App/Resources/Components/AppBar2.dart';
 import 'package:fasolution/App/UI/admin_panel/Announcements/announcementsPage.dart';
+import 'package:fasolution/App/UI/admin_panel/CompletedProjects/completed_project_tabBar.dart';
 import 'package:fasolution/App/UI/admin_panel/Members/Emplyees/employees_TabBar_screen.dart';
 import 'package:fasolution/App/UI/admin_panel/Members/Student/student_TabBar_screen.dart';
 import 'package:fasolution/App/UI/admin_panel/projects/projects_tabBar_screen.dart';
@@ -15,7 +16,8 @@ class AdminPanelScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: CustomizableAppBar(title: 'Admin Panel'),
-      body: Stack(alignment: Alignment.center,
+      body: Stack(
+        alignment: Alignment.center,
         children: [
           Image.asset('assets/images/logo.png'),
           Padding(
@@ -29,13 +31,23 @@ class AdminPanelScreen extends StatelessWidget {
                   title: 'Employees',
                   icon: CupertinoIcons.person,
                   onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const EmployeesTabBar(),));              },
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const EmployeesTabBar(),
+                        ));
+                  },
                 ),
                 buildGridTile(
                   title: 'Students',
                   icon: Icons.school_outlined,
                   onTap: () {
-          Navigator.push(context, MaterialPageRoute(builder: (context) => const StudentTabBar(),)) ;             },
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const StudentTabBar(),
+                        ));
+                  },
                 ),
                 buildGridTile(
                   title: 'Internships',
@@ -60,16 +72,26 @@ class AdminPanelScreen extends StatelessWidget {
                   },
                 ),
                 buildGridTile(
-                  title: 'Assign Project',
+                  title: 'Assigned Projects',
                   icon: Icons.assignment_ind_outlined,
                   onTap: () {
                     Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) => ProjectsTabBar(),
-                        ));//
+                        )); //
                   },
                 ),
+                buildGridTile(
+                    title: 'Completed Projects',
+                    icon: Icons.done_all_outlined,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => CompletedProjectsTabBar(),
+                          ));
+                    })
               ],
             ),
           ),

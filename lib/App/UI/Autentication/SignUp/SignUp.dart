@@ -4,16 +4,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:fasolution/App/Model/Model/UserModel.dart';
 import 'package:fasolution/App/UI/Autentication/Login.dart';
 import 'package:fasolution/App/UI/Autentication/SignUp/CompleteProfile.dart';
-import 'package:fasolution/App/Utils/ShowMessage/StatusBars.dart';
 import 'package:fasolution/App/Utils/ShowMessage/Ui%20Helper.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:image_picker/image_picker.dart';
 
 import '../../../Resources/Color.dart';
 import '../../../Resources/Components/CustomizedTextField.dart';

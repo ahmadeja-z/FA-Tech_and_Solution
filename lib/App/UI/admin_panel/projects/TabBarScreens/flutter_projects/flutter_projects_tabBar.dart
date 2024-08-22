@@ -1,28 +1,24 @@
-import 'package:fasolution/App/Resources/Components/AppBar2.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_flow_projects/flutterFlow_tabBAr.dart';
 import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects/flutter_projects/onGoing_flutter_projects.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects/flutter_projects_tabBar.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/web_development_projects/WebProjects/onGoing_webProjects.dart';
-import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/web_development_projects/web_development_tabBar.dart';
+import 'package:fasolution/App/UI/admin_panel/projects/TabBarScreens/flutter_projects/flutter_projects/pending_flutter_projects.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../../../Resources/Color.dart';
+import '../../../../../Resources/Color.dart';
 
-class ProjectsTabBar extends StatefulWidget {
-  const ProjectsTabBar({super.key});
+class FlutterTabBar extends StatefulWidget {
+  const FlutterTabBar({super.key});
   @override
-  _ProjectsTabBarState createState() => _ProjectsTabBarState();
+  _FlutterTabBarState createState() => _FlutterTabBarState();
 }
 
-class _ProjectsTabBarState extends State<ProjectsTabBar>
+class _FlutterTabBarState extends State<FlutterTabBar>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
 
   @override
   void initState() {
     super.initState();
-    _tabController = TabController(length: 3, vsync: this);
+    _tabController = TabController(length: 2, vsync: this);
   }
 
   @override
@@ -34,13 +30,7 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomizableAppBar(
-        title: 'Projects',
-        leadingIcon: const Icon(CupertinoIcons.back),
-        onLeadingPressed: () {
-          Navigator.pop(context);
-        },
-      ),
+
       body: Column(
         children: [
           Container(
@@ -56,6 +46,7 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
               ],
             ),
             child: TabBar(
+              padding: EdgeInsets.symmetric(horizontal: 20),
               controller: _tabController,
               labelColor: Colors.white,
               labelStyle: const TextStyle(fontFamily: 'Lato'),
@@ -65,11 +56,11 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
                 borderRadius: BorderRadius.circular(10.0),
               ),
               dividerHeight: 0,
-              isScrollable: true,
+              automaticIndicatorColorAdjustment: true,
+
               tabs: const [
-                Tab(text: ' Web Development '),
-                Tab(text: " Flutter Flow "),
-                Tab(text: " Flutter "),
+                Tab(text: ' On Going '),
+                Tab(text: " Pending "),
               ],
             ),
           ),
@@ -77,9 +68,8 @@ class _ProjectsTabBarState extends State<ProjectsTabBar>
             child: TabBarView(
               controller: _tabController,
               children: const [
-                WebDevelopmentTabBar(),
-                FlutterFlowTabBar(),
-                FlutterTabBar()
+                OnGoingFlutterProjects(),
+                PendingFlutterProjects(),
               ],
             ),
           ),
